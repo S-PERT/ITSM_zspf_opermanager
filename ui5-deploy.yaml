@@ -1,0 +1,27 @@
+# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: "4.0"
+metadata:
+  name: zsp.itsm.zspfopermanager
+type: application
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        ignoreCertErrors: true
+        target:
+          url: https://saphana2.s-pert.com:44360
+          client: '100'
+        app:
+          name: ZSPF_OPERMANAGE
+          description: 운영 담당자
+          package: ZSP_ITSM_OPERMANAGER
+          transport: SPDK903810
+        exclude:
+          - /test/
+          - /localService/
