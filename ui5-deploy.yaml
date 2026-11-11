@@ -17,11 +17,14 @@ builder:
         target:
           url: https://saphana2.s-pert.com:44360
           client: '100'
+        credentials:
+          username: env:UI5_DEPLOY_USERNAME
+          password: env:UI5_DEPLOY_PASSWORD
         app:
           name: ZSPF_OPERMANAGE
           description: 운영 담당자
           package: ZSP_ITSM_OPERMANAGER
-          transport: SPDK903810
+          transport: SPDK904034
         exclude:
           - /test/
           - /localService/
