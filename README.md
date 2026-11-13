@@ -179,3 +179,41 @@ sap.ui.define([
     });
 });
 ```
+
+<br>
+
+#### 5) annotation.xml — operDelete(논리 삭제) 액션 실행 시 테이블 자동 새로고침(Common.SideEffects)
+
+BDEF의 `operDelete` 액션은 레코드를 물리적으로 삭제하지 않고 `delflag = 'X'`로 처리하는 논리적 삭제(Soft Delete) 방식으로 동작합니다. OData V4 Fiori Elements 환경에서 커스텀 액션(POST) 실행 후 테이블 캐시가 자동 갱신되지 않아 화면에 삭제된 행이 그대로 남아있던 현상을 해결하기 위해 SideEffects 어노테이션을 적용했습니다.
+
+* **현상 및 원인**:
+  - `operDelete` 액션 수행 시 백엔드 CDS View(`where delflag is initial`)에서 해당 행이 제외되지만, 프론트엔드에서는 엔티티셋 재조회 트리거가 없어 브라우저를 새로고침하기 전까지 행이 유지됨.
+* **해결 방안 (`annotation.xml`)**:
+  - `SAP__self.OperManagerType` 및 `operDelete` 액션 대상에 `com.sap.vocabularies.Common.v1.SideEffects` 어노테이션 정의.
+  - 액션 실행 완료 시 `TargetEntities`로 엔티티셋(`...Container/OperManager`)을 지정하여 전체 리스트를 즉시 자동 재조회(Refresh)하도록 구성.
+
+```xml
+<Annotations Target="SAP__self.OperManagerType">
+    <Annotation Term="Common.SideEffects" Qualifier="OperDeleteRefresh">
+        <Record Type="Common.SideEffectsType">
+            <PropertyValue Property="SourceActions">
+                <Collection>
+                    <String>com.sap.gateway.srvd.zsp_itsm_p_opermanager_ui.v0001.operDelete</String>
+                    <String>SAP__self.operDelete</String>
+                </Collection>
+            </PropertyValue>
+            <PropertyValue Property="TargetEntities">
+                <Collection>
+                    <NavigationPropertyPath>/com.sap.gateway.srvd.zsp_itsm_p_opermanager_ui.v0001.Container/OperManager</NavigationPropertyPath>
+                </Collection>
+            </PropertyValue>
+            <PropertyValue Property="TargetProperties">
+                <Collection>
+                    <PropertyPath>Delflag</PropertyPath>
+                </Collection>
+            </PropertyValue>
+        </Record>
+    </Annotation>
+</Annotations>
+```
+

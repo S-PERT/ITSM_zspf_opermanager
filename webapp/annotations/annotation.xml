@@ -13,6 +13,55 @@
     </edmx:Reference>
     <edmx:DataServices>
         <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="local">
+            <!-- 1. EntityType 레벨 SideEffects (SourceActions) -->
+            <Annotations Target="SAP__self.OperManagerType">
+                <Annotation Term="Common.SideEffects" Qualifier="OperDeleteRefresh">
+                    <Record Type="Common.SideEffectsType">
+                        <PropertyValue Property="SourceActions">
+                            <Collection>
+                                <String>com.sap.gateway.srvd.zsp_itsm_p_opermanager_ui.v0001.operDelete</String>
+                                <String>SAP__self.operDelete</String>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="TargetEntities">
+                            <Collection>
+                                <NavigationPropertyPath>/com.sap.gateway.srvd.zsp_itsm_p_opermanager_ui.v0001.Container/OperManager</NavigationPropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="TargetProperties">
+                            <Collection>
+                                <PropertyPath>Delflag</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+
+            <!-- 2. Action 레벨 SideEffects (TargetEntities 지정) -->
+            <Annotations Target="SAP__self.operDelete(SAP__self.OperManagerType)">
+                <Annotation Term="Common.SideEffects" Qualifier="OperDeleteActionRefresh">
+                    <Record Type="Common.SideEffectsType">
+                        <PropertyValue Property="TargetEntities">
+                            <Collection>
+                                <NavigationPropertyPath>/com.sap.gateway.srvd.zsp_itsm_p_opermanager_ui.v0001.Container/OperManager</NavigationPropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+
+            <!-- 3. Bound Action 슬래시 표기법 지원 -->
+            <Annotations Target="SAP__self.OperManagerType/operDelete">
+                <Annotation Term="Common.SideEffects" Qualifier="OperDeleteBoundRefresh">
+                    <Record Type="Common.SideEffectsType">
+                        <PropertyValue Property="TargetEntities">
+                            <Collection>
+                                <NavigationPropertyPath>/com.sap.gateway.srvd.zsp_itsm_p_opermanager_ui.v0001.Container/OperManager</NavigationPropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
         </Schema>
     </edmx:DataServices>
 </edmx:Edmx>
