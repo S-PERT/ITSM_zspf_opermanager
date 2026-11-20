@@ -112,7 +112,11 @@
       }
     },
     "resources": {
-      "css": []
+      "css": [
+        {
+          "uri": "css/opermanager.css"
+        }
+      ]
     },
     "routing": {
       "config": {},

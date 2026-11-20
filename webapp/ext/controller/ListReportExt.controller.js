@@ -3,6 +3,40 @@ sap.ui.define([
 ], function (ControllerExtension) {
     "use strict";
 
+    // Row height (px) of the list grid table, tall enough for the manager image avatar.
+    // GridTable rows have a fixed height (about 33px in compact density), which cut the image.
+    var iListRowHeight = 50;
+
+    function applyListRowHeight(oView) {
+        var fnApply = function (oInnerTable) {
+            if (!oInnerTable || !oInnerTable.isA || !oInnerTable.isA("sap.ui.table.Table")) {
+                return;
+            }
+            // The mdc table drives the grid table through a row mode (Auto/Fixed); with a row mode set,
+            // the deprecated table property rowHeight is ignored and rowContentHeight decides the height
+            var oRowMode = typeof oInnerTable.getRowMode === "function" && oInnerTable.getRowMode();
+            if (oRowMode && typeof oRowMode.setRowContentHeight === "function") {
+                if (oRowMode.getRowContentHeight() !== iListRowHeight) {
+                    oRowMode.setRowContentHeight(iListRowHeight);
+                }
+            } else if (oInnerTable.getRowHeight() !== iListRowHeight) {
+                oInnerTable.setRowHeight(iListRowHeight);
+            }
+        };
+        oView.findAggregatedObjects(true, function (o) {
+            return o && o.isA && o.isA("sap.ui.table.Table");
+        }).forEach(fnApply);
+        oView.findAggregatedObjects(true, function (o) {
+            return o && o.isA && o.isA("sap.ui.mdc.Table");
+        }).forEach(function (oMdcTable) {
+            if (oMdcTable.initialized) {
+                oMdcTable.initialized().then(function () {
+                    fnApply(oMdcTable.getAggregation("_content") || (typeof oMdcTable._getTable === "function" && oMdcTable._getTable()));
+                }).catch(function () {});
+            }
+        });
+    }
+
     function attachGridRowNavigation(oController) {
         var oView = oController.base.getView();
         var oExtensionAPI = oController.base.getExtensionAPI();
@@ -78,8 +112,10 @@ sap.ui.define([
             onAfterRendering: function () {
                 var that = this;
                 attachGridRowNavigation(that);
+                applyListRowHeight(that.base.getView());
                 setTimeout(function () {
                     attachGridRowNavigation(that);
+                    applyListRowHeight(that.base.getView());
                 }, 500);
             }
         }

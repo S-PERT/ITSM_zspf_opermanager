@@ -24,7 +24,7 @@ builder:
           name: ZSPF_OPERMANAGE
           description: 운영 담당자
           package: ZSP_ITSM_OPERMANAGER
-          transport: SPDK904034
+          transport: SPDK904165
         exclude:
           - /test/
           - /localService/

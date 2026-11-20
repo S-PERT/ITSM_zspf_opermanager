@@ -1,0 +1,11 @@
+/* List report: center the manager image in the Attachment column.
+   FE wraps the avatar in an inline-styled flex box with "justify-content: space-between" and an empty
+   second child, which pins the avatar to the left; the avatar also carries sapUiSmallMarginEnd.
+   Overriding inline styles needs !important. Scoped to the list report table column. */
+td[data-sap-ui-colid*="::OperManagerList--"][data-sap-ui-colid$="::LineItem::C::Attachment-innerColumn"] .sapUiTableCellInner > div > div {
+    justify-content: center !important;
+}
+
+td[data-sap-ui-colid*="::OperManagerList--"][data-sap-ui-colid$="::LineItem::C::Attachment-innerColumn"] .sapFAvatar {
+    margin-right: 0 !important;
+}
